@@ -1,41 +1,113 @@
-# RISI Data Analyst Candidate Exercise
+# KScopis - RISI Data Analyst Candidate Exercise
 ## Overview
-The intention of this exercise is to assess your ability to think critically and apply your technical skill set to an analytics problem designed to reflect some of the tasks you are likely to encounter as a Data Analyst at RISI, albeit in a simplified manner. This exercise is deliberately vague and no specific approach or answer is “right”. However, we are particularly interested in seeing code that is efficient and clear.
+Following code sets working directory, reads data into R environment, cleans datasets, unzips files, and describes cookbook to create a map
 
-### Instructions
-- Using R, download the [Rural Atlas](https://www.ers.usda.gov/data-products/atlas-of-rural-and-small-town-america/) data.
-- Load all available sheets into your R session. 
-   - Note that the Rural Atlas .CSV files are a mix of comma and tab separated sheets
-- Clean the variable names for each data set to snake_case (all lowercase, words separated by single underscores)
-- Using R, create a new folder called 'clean_data'
-- Write the cleaned data out to your new folder. The output file names should also be in snake_case.
-- Download the 2018 [Census County Cartographic Boundary files](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html) and unzip it using R. Use the 500K resolution file.
-- Using R, Python, or QGIS, map the rural counties of New England. Use the 2013 Non-Metro rural designation from the Rural Atlas. Choose and include in your map 2 or more variables from the Rural Atlas that interest you
 
-### Required steps:
-- Clone this Github repository.
-- Download and clean the data sets
-- Create a map
-- Commit all code and output to the repository
+## Deliverable:
 
-### Deliverable: 
-- Any code and documentation required to reproduce your analysis and its results, including scripts, readmes, diagrams, or other instructive material provided via a link to a Github repository.
-- A map as described above.
+	### code assumes the following packages are installed: cowplot, datasets, dplyr, ggplot2, ggrepel, ggspatial, grDevices, graphics, leaflet, libwgeom, methods, raster, sf, snakecase, spData, spDataLarge, stats, tmap, tmaptools, xlsx
+	
+library(base)
+setwd("~/Desktop")  #set working directory
 
-## Guidelines
-We should be able to duplicate your results with whatever code and documentation you provide and nothing else. Overly documented code is something we never complain about! For the mapping component of this exercise, polish and aesthetics are important. For the data download and processing, concision and clarity are most important. Note that, excluding comments and blank lines, it is fully possible to do all of the download and processing in fewer than 20 lines of code.
+## Cleaning Datasets
 
-With that said, this task will take some time. If you need more time or cannot complete all components of the exercise please contact us and we can make accommodations; certain skills may be more important to demonstrate than others based on experience.
+	### uploaded Rural Atlas manually through GUI, read.csv command returned with unaddressed nulls/not all files are csv
+	### read csv files into environment, proclaim headers TRUE - this will set column names to first row values
 
-### Dos
-1. Do ask questions!
-2. Do use code efficiently and comment clearly
-3. Do review your work and minimize the occurrence of errors
-4. Do include checks and data diagnostics within your code.
-5. Do use scripts whenever possible
+rural_atlas <- unzip("Rural_Atlas_Update23.zip")
+people = read.csv("People.csv", header = T)
+jobs = read.csv('Jobs.csv', header = T)
+income = read.csv("Income.csv", header = T)
+veterans = read.csv("Veterans.csv", header = T)
+county_classifications = read.csv("County Classifications.csv", header = T)
+variable_name_lookup = read.csv("Variable Name Lookup.csv", header = T)
 
-### Don’ts
-1.  Don’t use spreadsheets in this exercise; doing tabulations in a spreadsheet is fine but no part of your analysis should rely on them.
-2.  Don’t rely heavily, if at all, on GUI commands or instructions. We want to see how you program, not how well you use a particular software package. 
-3.  Don’t assume we know what you’re doing; document it.
-4.  Don’t be afraid to think outside the box. You are encouraged to augment your analysis with something that demonstrates your unique toolkit but it must clearly provide value or insight
+	### for each dataset, take all non-integer columns and headers and convert to snakecase using snakecase package
+
+library(snakecase)
+as.character(people$state)
+as.character(people$county)
+people$state <- to_snake_case(people$state)
+people$county <- to_snake_case(people$county)
+names(people) <- to_snake_case(names(people))
+
+![people](https://user-images.githubusercontent.com/89413212/131079491-ab93492a-5750-47b7-8bc4-72646d0fb5ad.png)
+
+as.character(jobs$state)
+as.character(jobs$county)
+jobs$state <- to_snake_case(jobs$state)
+jobs$county <- to_snake_case(jobs$county)
+names(jobs) <- to_snake_case(names(jobs))
+
+![jobs](https://user-images.githubusercontent.com/89413212/131079528-ec5bc1c7-6608-4778-bfb0-6c1eec28e786.png)
+
+as.character(veterans$county)
+as.character(veterans$state)
+veterans$state <- to_snake_case(veterans$state)
+veterans$county <- to_snake_case(veterans$county)
+names(veterans) <- to_snake_case(names(veterans))
+
+![veterans](https://user-images.githubusercontent.com/89413212/131079542-725816b4-9764-492e-81db-64f5339ca9e4.png)
+
+as.character(county_classifications$county)
+as.character(county_classifications$state)
+county_classifications$state <- to_snake_case(county_classifications$state)
+county_classifications$county <- to_snake_case(county_classifications$county)
+names(county_classifications) <- to_snake_case(names(county_classifications))
+
+![c_c](https://user-images.githubusercontent.com/89413212/131079609-6194b70d-da4f-477a-81c3-2c20cfd75b8f.png)
+
+as.character(variable_name_lookup$Category)
+as.character(variable_name_lookup$varShort)
+as.character(variable_name_lookup$varLong)
+names(variable_name_lookup) <- to_snake_case(names(variable_name_lookup))
+variable_name_lookup$category <- to_snake_case(variable_name_lookup$category)
+variable_name_lookup$var_short <- to_snake_case(variable_name_lookup$var_short)
+variable_name_lookup$var_long <- to_snake_case(variable_name_lookup$var_long)
+names(variable_name_lookup) <- to_snake_case(names(variable_name_lookup))
+
+![vnl](https://user-images.githubusercontent.com/89413212/131079578-d744ea5e-055c-4c81-b145-9a720cb6b5b9.png)
+
+as.character(income$State)
+as.character(income$County)
+names(income) <- to_snake_case(names(income))
+income$state <- to_snake_case(income$state)
+income$county <- to_snake_case(income$county)
+
+![income](https://user-images.githubusercontent.com/89413212/131079635-b9a233ac-2e34-4e24-8703-9b5bf4a9610a.png)
+
+
+## Mapping
+	### Due to increased CPU usage, mapping commands were not able to be successfully executed (explained below in Shortcomings section).  Below, I have explained the steps and cookbook necessary to complete mapping section.
+	### Mapping file types: .dbf, .prj, .shx, .cpg, .xml, .shp.  Variable file types: .csv, .txt
+	
+	Start by loading in shapefile (cb_2018_us_county_500k.shp) to create map boundaries 
+	
+	
+	ggplot(data = cb_2018_us_county_500.shp) +
+			geom_sf +
+			geom_text(data = DATASET, aes(x=X, y+Y, label = "Economic conditions for New England, 2017"), 
+					color = "grey22", fontface = "bold", check_overlap = FALSE) +
+				annotate(geom = "text", x = -90, y =26, label = "New England",
+				fontface = "italic", color "darkblue", size = 4) +
+				coord_sf(xlim = c(xxx, xxx), ylim = c(xxx, xxx), expand = TRUE)
+	
+	
+	### I would have liked to map the Income and Jobs datasets together, as well as the Veterans and Income.  
+	
+
+## Shortcomings
+While the prompted delieverables were not intended to be complicated, the commands required to complete certain tasks - particularly the mapping portion - overburdened the RAM capabilities of my laptop, a 2011 4GB Macbook Air (see below).  
+
+![summary](https://user-images.githubusercontent.com/89413212/131076609-78c40bee-8685-4f84-97c8-315bf877c20a.png)
+
+
+This error appeared when attempting to plot border shapefile using ggplot2() + sf(), ending in a force quit of RStudio.
+
+![error](https://user-images.githubusercontent.com/89413212/131076606-4b563e88-641a-4c84-aff8-fbcfbabd014f.png)
+
+The CPU usage at times became so great it became impossible to view datasets.
+
+![load](https://user-images.githubusercontent.com/89413212/131076870-c5af7f3d-d217-41dd-8f19-9ff2bb290b7a.png)
+
