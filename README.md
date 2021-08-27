@@ -1,6 +1,6 @@
 # KScopis - RISI Data Analyst Candidate Exercise
 ## Overview
-Following code sets working directory, reads data into R environment, cleans datasets, unzips files, and describes cookbook to create a map
+Following code sets working directory, reads data into R environment, cleans datasets, unzips files, and describes cookbook to create a map.  If you have any questions, please feel free to contact me at kathleen.scopis@gmail.com or (302)540-9066.
 
 
 ## Deliverable:
@@ -9,6 +9,7 @@ Following code sets working directory, reads data into R environment, cleans dat
 	
 library(base)
 setwd("~/Desktop")  #set working directory
+dir.create("clean_data")
 
 ## Cleaning Datasets
 
@@ -78,6 +79,19 @@ income$county <- to_snake_case(income$county)
 ![income](https://user-images.githubusercontent.com/89413212/131079635-b9a233ac-2e34-4e24-8703-9b5bf4a9610a.png)
 
 
+
+## Exporting Data
+
+The following code could be used to export cleaned files out of Renvironment for other uses.
+
+	library(xlsx)
+	write.xlsx(income, income.xlsx)
+	install.packages('xlsx')
+	
+	write.table()
+	write.csv()
+	
+
 ## Mapping
 	### Due to increased CPU usage, mapping commands were not able to be successfully executed (explained below in Shortcomings section).  Below, I have explained the steps and cookbook necessary to complete mapping section.
 	### Mapping file types: .dbf, .prj, .shx, .cpg, .xml, .shp.  Variable file types: .csv, .txt
@@ -98,7 +112,7 @@ income$county <- to_snake_case(income$county)
 	
 
 ## Shortcomings
-While the prompted delieverables were not intended to be complicated, the commands required to complete certain tasks - particularly the mapping portion - overburdened the RAM capabilities of my laptop, a 2011 4GB Macbook Air (see below).  
+While the prompted delieverables were not intended to be complicated, the commands required to complete certain tasks - particularly the mapping and file export portions - overburdened the RAM capabilities of my laptop, a 2011 4GB Macbook Air (see below).  
 
 ![summary](https://user-images.githubusercontent.com/89413212/131076609-78c40bee-8685-4f84-97c8-315bf877c20a.png)
 
